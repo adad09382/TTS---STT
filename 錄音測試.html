@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Web Speech API Demo</title>
+  </head>
+  <body>
+    <h1>Web Speech API Demo</h1>
+
+    <h2>錄音功能</h2>
+    <button id="record-button">開始錄音</button>
+    <button id="stop-button">停止錄音</button>
+    <button id="play-button">播放錄音</button>
+    <div id="recordings-container"></div>
+
+    <h2>文字轉語音功能</h2>
+    <input type="text" id="text-input" placeholder="輸入文字" />
+    <button id="text-to-speech-button">文字轉語音</button>
+    <button id="play-text-button">播放語音</button>
+    <div id="speech-container"></div>
+
+    <script>
+      // 取簡化取 DOM 涵式
+      const getElement = (id) => document.getElementById(id);
+      // 取得DOM
+      const recordButton = getElement("record-button");
+      const stopButton = getElement("stop-button");
+      const playButton = getElement("play-button");
+      const recordingsContainer = getElement("recordings-container");
+      const textInput = getElement("text-input");
+      const textToSpeechButton = getElement("text-to-speech-button");
+      const playTextButton = getElement("play-text-button");
+      const speechContainer = getElement("speech-container");
+      // 初始化變量
+      let recorder;
+      let recordedChunks = [];
+      // 為按鈕增加事件
+      recordButton.addEventListener("click", startRecording);
+      stopButton.addEventListener("click", stopRecording);
+      playButton.addEventListener("click", playRecording);
+
+      textToSpeechButton.addEventListener("click", textToSpeech);
+      playTextButton.addEventListener("click", playTextSpeech);
+
+      async function startRecording() {
+        try {
+          const stream = await navigator.mediaDevices.getUserMedia({
+            audio: true,
+          });
+          recorder = new MediaRecorder(stream);
+          recorder.addEventListener("dataavailable", (e) =>
+            recordedChunks.push(e.data)
+          );
+          recorder.start();
+
+          recordButton.disabled = true;
+          stopButton.disabled = false;
+          playButton.disabled = true;
+        } catch (error) {
+          console.error("錄音失敗：", error);
+        }
+      }
+
+      function stopRecording() {
+        recorder.stop();
+        recordButton.disabled = false;
+        stopButton.disabled = true;
+        playButton.disabled = false;
+      }
+
+      function handleDataAvailable(event) {
+        recordedChunks.push(event.data);
+      }
+
+      // function playRecording() {
+      //   const blob = new Blob(recordedChunks, { type: "audio/webm" });
+      //   const audio = new Audio(URL.createObjectURL(blob));
+      //   audio.controls = true;
+      //   recordingsContainer.appendChild(audio);
+      // }
+      function playRecording() {
+        createAndAppendAudioElement(
+          recordingsContainer,
+          recordedChunks,
+          "audio/webm"
+        );
+      }
+
+      // function textToSpeech() {
+      //   const utterance = new SpeechSynthesisUtterance(textInput.value);
+      //   const synth = window.speechSynthesis;
+      //   synth.speak(utterance);
+
+      //   const blob = new Blob([
+      //     new XMLSerializer().serializeToString(utterance),
+      //   ]);
+      //   const audio = new Audio(URL.createObjectURL(blob));
+      //   audio.controls = true;
+      //   speechContainer.appendChild(audio);
+      // }
+      function textToSpeech() {
+        const utterance = createAndSpeakUtterance(textInput.value);
+        createAndAppendAudioElement(speechContainer, [
+          new XMLSerializer().serializeToString(utterance),
+        ]);
+      }
+
+      // function playTextSpeech() {
+      //   const utterance = new SpeechSynthesisUtterance(textInput.value);
+      //   const synth = window.speechSynthesis;
+      //   synth.speak(utterance);
+      // }
+      function playTextSpeech() {
+        createAndSpeakUtterance(textInput.value);
+      }
+
+      function createAndSpeakUtterance(text) {
+        const utterance = new SpeechSynthesisUtterance(text);
+        window.speechSynthesis.speak(utterance);
+        return utterance;
+      }
+      // 創建Audio 到 DOM 中
+      function createAndAppendAudioElement(
+        container,
+        chunks,
+        type = "text/xml"
+      ) {
+        const blob = new Blob(chunks, { type });
+        const audio = new Audio(URL.createObjectURL(blob));
+        audio.controls = true;
+        container.appendChild(audio);
+      }
+    </script>
+  </body>
+</html>

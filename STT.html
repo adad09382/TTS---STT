@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      html {
+        font-family: "Montserrat";
+        font-size: 20px;
+      }
+      section {
+        min-height: 100vh;
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: rgb(37, 37, 37);
+        flex-direction: column;
+        padding: 50px, 0;
+      }
+      section h1 {
+        color: rgba(255, 255, 255, 0.3);
+        text-align: center;
+        width: 100%;
+        font-size: 50px;
+        margin-bottom: 10px;
+      }
+      section p {
+        color: rgba(255, 255, 255, 0.3);
+        text-align: center;
+        width: 100%;
+        margin-bottom: 100%;
+        margin-bottom: 40px;
+      }
+      .container {
+        width: 90%;
+        max-width: 500px;
+        margin: 0 auto;
+        justify-content: center;
+      }
+      .texts p {
+        color: black;
+        text-align: left;
+        background-color: white;
+        width: 100%;
+        padding: 10px;
+        border-radius: 8px;
+        margin-bottom: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <section>
+      <h1>語音識別</h1>
+      <p>Available in chrome only</p>
+      <button>點擊錄音</button>
+      <div class="container">
+        <div class="texts">
+          <p>hello world</p>
+        </div>
+      </div>
+    </section>
+    <script src="./STT.js"></script>
+  </body>
+</html>
